@@ -1,8 +1,38 @@
 import 'dart:html';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
+// import 'package:login_signup_screen/Models/user.dart';
 
-class LoginPage extends StatelessWidget {
+import 'package:login_signup_screen/signup.dart';
+import 'package:login_signup_screen/forgotpassword.dart';
+import 'package:login_signup_screen/ticketCard.dart';
+import 'package:login_signup_screen/create_view.dart';
+// import 'package:login_signup_screen/utils/Database.dart';
+
+class MainLoginPage extends StatefulWidget {
+  @override
+  LoginPage createState() => LoginPage();
+}
+
+class LoginPage extends State<MainLoginPage> {
+  bool checkBoxValue = false;
+
+  //text controller getting user inputs from text fields
+
+  TextEditingController _username = TextEditingController();
+  TextEditingController _password = TextEditingController();
+
+  //validation
+  bool _validate = false;
+
+  //username input
+
+  String username;
+  String password;
+  String textUser = "empty value";
+  String textPass = "empty value";
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,9 +82,33 @@ class LoginPage extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 40),
                   child: Column(
-                    children: <Widget>[
-                      inputFile(label: "Email"),
-                      inputFile(label: "Password", obscureText: true)
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(15),
+                        child: TextField(
+                          controller: _username,
+                          decoration: InputDecoration(
+                              labelText: 'Username',
+                              errorText:
+                                  !_validate ? 'Fill in The Fileds' : null),
+                          onChanged: (value) => username = value,
+                          // onChanged: (value) {
+                          //   print(value);
+                          // },
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(15),
+                        child: TextField(
+                          controller: _password,
+                          decoration: InputDecoration(
+                              labelText: 'Password',
+                              errorText:
+                                  !_validate ? 'Fill in The Field' : null),
+                          obscureText: true,
+                          onChanged: (value) => password = value,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -73,7 +127,19 @@ class LoginPage extends StatelessWidget {
                     child: MaterialButton(
                       minWidth: double.infinity,
                       height: 60,
-                      onPressed: () {},
+                      onPressed: () {
+                        setState(() {
+                          _username.text.isEmpty
+                              ? _validate = false
+                              : _validate = true;
+                        });
+                        _username.text.isNotEmpty && _password.text.isNotEmpty
+                            ? Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => CreateView()))
+                            : null;
+                      },
                       color: Color(0xff9c1156),
                       elevation: 0,
                       shape: RoundedRectangleBorder(
@@ -97,13 +163,37 @@ class LoginPage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Text("Remember me"),
-                    // Text(
-                    //   " Sign up",
-                    //   style: TextStyle(
-                    //     fontWeight: FontWeight.w600,
-                    //     fontSize: 18,
-                    //   ),
-                    // )
+                    Checkbox(
+                        value: checkBoxValue,
+                        onChanged: (bool value) {
+                          setState(() {
+                            checkBoxValue = value;
+                          });
+                        })
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    RichText(
+                      text: TextSpan(children: <TextSpan>[
+                        TextSpan(
+                            text: 'Forgot Password?',
+                            style: new TextStyle(
+                              color: Colors.pink,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600,
+                            ),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            ForgotPassword()));
+                              })
+                      ]),
+                    )
                   ],
                 ),
 
@@ -111,24 +201,26 @@ class LoginPage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Text("Don't have an account?"),
-                    Text(
-                      " Sign up",
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 18,
-                      ),
-                    )
+                    RichText(
+                      text: TextSpan(children: <TextSpan>[
+                        TextSpan(
+                            text: 'Sign Up',
+                            style: new TextStyle(
+                                color: Colors.pink,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 20),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                // print("Sign Up Clicked");
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => SignupPage()));
+                              })
+                      ]),
+                    ),
                   ],
                 ),
-                Container(
-                  padding: EdgeInsets.only(top: 100),
-                  height: 200,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                        image: AssetImage("assets/background.png"),
-                        fit: BoxFit.fitHeight),
-                  ),
-                )
               ],
             ))
           ],
